@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+	<head>
+		<title>3D PONG - Alvaro Martin Menacho</title>
+		<style>
+			body {
+				background-color: black;
+			}
+			#gameCanvas {
+				background-color: #003333;
+				width: 640px;
+				height: 360px;
+				margin: auto;
+				align: center;
+			}
+			#scoreboard,h1 {
+				text-align: center;
+				font-family: Segoe UI, Helvetica, Ubuntu, sans-serif;
+				color: white;
+			}
+			#scores {
+				font-size:600%; 
+				padding:0; 
+				margin:0;
+				color: white;
+			}
+			#title {
+				background-color: white;
+				color: black;
+			}
+		</style>
+	</head>
+	<body onload='setup();'>
+		<h1 id='title'>3D PONG</h1>
+		<h1 id='scores'>0-0</h1>
+		<div id='gameCanvas'></div>
+		<script src='js/three.min.js'></script>
+		<script src='js/keyboard.js'></script>
+		<script src='js/pong.js'></script>
+		<div id='scoreboard'>
+			<h2 id='winnerBoard'>First to 3 wins!</h2>
+			<h3>A - move left
+			<br>D - move right</h3>
+			<embed src="Sonidos/Lazy Friday.mp3" autostart="true">
+		</div>
+	</body>
+</html>
