@@ -49,6 +49,14 @@ const BORDER_WIDTH = PLANE_WIDTH + 20,
       BORDER_DEPTH = 10,
       BORDER_QUALITY = 1;
 
+// Lateral Steps vars
+const STEP_WIDTH = 420,
+      STEP_HEIGTH = 20,
+      STEP_DEPTH1 = 40,
+      STEP_DEPTH2 = 60,
+      STEP_DEPTH3 = 80,
+      STEP_QUALITY = 10;
+
 // Paddles vars
 const PADDLE_WIDTH = 10,
 	  PADDLE_HEIGTH = 30,
@@ -83,6 +91,7 @@ function setup()
 {	
 	createScene();
 	addPlaneMesh();
+	addLateralStepsMesh();
     addBallMesh();
     addPaddleMesh();
     addLight();
@@ -126,6 +135,7 @@ function addPlaneMesh()
         PLANE_HEIGTH,
         PLANE_QUALITY,
         PLANE_QUALITY);
+
     var material = new THREE.MeshLambertMaterial(
       {
         color: '#400080'
@@ -150,10 +160,10 @@ function addPlaneMesh()
         BORDER_DEPTH,
         BORDER_QUALITY);
     
-    var material = new THREE.MeshLambertMaterial(
-      {
-        color: '#ff71ce'
-      });
+
+
+        var texture = new THREE.TextureLoader().load('Textures/madera.jpg');
+    var material = new THREE.MeshBasicMaterial( { map: texture } );
 
     border = new THREE.Mesh(geometry2, material);
     border.position.z = -255.1;
@@ -164,16 +174,89 @@ function addPlaneMesh()
     scene.add(border);
 }
 
+function addLateralStepsMesh()
+{
+    var geometry1 = new THREE.CubeGeometry(
+        STEP_WIDTH,
+        STEP_HEIGTH,
+        STEP_DEPTH1,
+        STEP_QUALITY);
+
+    var geometry2 = new THREE.CubeGeometry(
+        STEP_WIDTH,
+        STEP_HEIGTH,
+        STEP_DEPTH2,
+        STEP_QUALITY);
+
+    var geometry3 = new THREE.CubeGeometry(
+        STEP_WIDTH,
+        STEP_HEIGTH,
+        STEP_DEPTH3,
+        STEP_QUALITY);
+    
+    var material1 = new THREE.MeshLambertMaterial(
+      {
+        color: '#400080'
+      });
+
+    var material2 = new THREE.MeshLambertMaterial(
+      {
+        color: '#ff71ce'
+      });
+
+    	
+
+    // Create 3 steps for each side
+    step1 = new THREE.Mesh(geometry1, material1);
+    step2 = new THREE.Mesh(geometry2, material2);
+    step3 = new THREE.Mesh(geometry3, material1);
+    step4 = new THREE.Mesh(geometry1, material1);
+    step5 = new THREE.Mesh(geometry2, material2);
+    step6 = new THREE.Mesh(geometry3, material1);
+
+    steps = [step1, step2, step3, step4, step5, step6];
+
+    // Move to their respective coordinates
+	step1.position.y = 120;
+	step2.position.y = 140;
+	step3.position.y = 160;
+	step4.position.y = -120;
+	step5.position.y = -140;
+	step6.position.y = -160;
+
+    step1.position.z = -240;
+    step2.position.z = -230;
+    step3.position.z = -220;
+    step4.position.z = -240;
+    step5.position.z = -230;
+    step6.position.z = -220;
+
+    // Shadows
+      for (step in steps) {
+    	steps[step].castShadow = true;
+    	steps[step].recieveShadow = true;
+  }
+
+    // Finally, add to the scene
+    scene.add(step1);
+    scene.add(step2);
+    scene.add(step3);
+    scene.add(step4);
+    scene.add(step5);
+    scene.add(step6);
+}
+
 function addBallMesh()
 {
     var geometry = new THREE.SphereGeometry(
         RADIUS,
         SEGMENTS,
         RINGS);
+
     var material = new THREE.MeshLambertMaterial(
-        {
-          color: '#80ff80'
-        });
+      {
+        color: '#7def67'
+      });
 
     // Create a new mesh with sphere geometry
     ball = new THREE.Mesh(geometry, material);
@@ -246,7 +329,7 @@ function addSpotLight()
     spotLight = new THREE.SpotLight(0xFFFFFF, 0.75);
 
     // Set its position
-    spotLight.position.set(0, 0, 125);
+    spotLight.position.set(0, 0, 150);
 
     // Turn on shadows
     spotLight.castShadow = true;
@@ -292,8 +375,8 @@ function cameraBehind()
 	camera.rotation.z = -90 * Math.PI/180;
 
 	// Make spotlight follow the ball
-	spotLight.position.x = -ball.position.x;
-	spotLight.position.y = -ball.position.y;
+	spotLight.position.x = -ball.position.x * 1.25;
+	spotLight.position.y = -ball.position.y * 1.25;
 }
 
 // Move the ball
@@ -315,7 +398,7 @@ function ballMovement()
 		ballDirY = -ballDirY;
 
 		// Wall hit sound
-		var wall = new Audio('Sonidos/pong_wall.wav');
+		var wall = new Audio('Sounds/pong_wall.wav');
 		wall.play();
 	}
 
@@ -409,7 +492,7 @@ function hitBall()
 				ballDirY += playerPaddleDirY * 0.3;
 
 				// Paddle hit sound
-				var ping = new Audio('Sonidos/pong_hit.wav');
+				var ping = new Audio('Sounds/pong_hit.wav');
 				ping.play();
 			}
 		}
@@ -428,7 +511,7 @@ function hitBall()
 				ballDirY += playerPaddleDirY * 0.3;
 
 				// Paddle hit sound
-				var pong = new Audio('Sonidos/pong_hit.wav');
+				var pong = new Audio('Sounds/pong_hit.wav');
 				pong.play();
 			}
 		}
@@ -454,7 +537,7 @@ function goal()
 		ballSpeed = 2;
 
 		// Goal sound
-		var pong_fail = new Audio('Sonidos/pong_fail.wav');
+		var pong_fail = new Audio('Sounds/pong_fail.wav');
 		pong_fail.play();pong_fail
 	}
 
@@ -472,7 +555,7 @@ function goal()
 		ballSpeed = 2;
 
 		// Goal sound
-		var pong_fail = new Audio('Sonidos/pong_fail.wav');
+		var pong_fail = new Audio('Sounds/pong_fail.wav');
 		pong_fail.play();pong_fail
 	}
 }
